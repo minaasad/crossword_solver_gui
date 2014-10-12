@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -107,6 +106,53 @@ namespace CrosswordSolver
                 if (!(char.IsLetter(user_word_char) | user_word_char.Equals('_')))
                 {
                     return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// This method checks if any illegal exist accordingly
+        /// </summary>
+        /// <param name="word">string to check</param>
+        /// <returns>True if illegals were found, false if none were found</returns>
+        public bool ContainsIllegalCharactersOrPlaceholders(string word)
+        {
+            foreach (char user_word_char in word)
+            {
+                if (!(char.IsLetter(user_word_char)))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// This method checks if any illegal exist accordingly
+        /// </summary>
+        /// <param name="word">string to check</param>
+        /// <returns>True if illegals were found, false if none were found</returns>
+        public bool ContainsIllegalWordSizeFormat(string word)
+        {
+            if (word.StartsWith(",") | word.EndsWith(",")) return true;
+
+            for (int i = 0; i < word.Length; i++)
+            {
+                //Check for illegal characters
+                char wordChar = word[i];
+                if (!(wordChar.Equals(' ') | wordChar.Equals(',') | char.IsNumber(wordChar)))
+                {
+                    return true;
+                }
+
+                //Check for repeated commas
+                if ((i+1) <= word.Length)
+                {
+                    if ((wordChar.Equals(',')) && (word[i + 1].Equals(',')))
+                    {
+                        return true;
+                    }
                 }
             }
             return false;

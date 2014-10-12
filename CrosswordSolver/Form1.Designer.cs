@@ -37,13 +37,21 @@
             this.lblWordSizes = new System.Windows.Forms.Label();
             this.btnSearch = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txtResults = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblTimer = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lblMaxLetters = new System.Windows.Forms.Label();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.lblWords = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblAnagram
@@ -61,6 +69,7 @@
             this.txtAnagram.Name = "txtAnagram";
             this.txtAnagram.Size = new System.Drawing.Size(264, 20);
             this.txtAnagram.TabIndex = 1;
+            this.txtAnagram.Text = "heandnedgotfree";
             // 
             // txtPattern
             // 
@@ -68,6 +77,7 @@
             this.txtPattern.Name = "txtPattern";
             this.txtPattern.Size = new System.Drawing.Size(264, 20);
             this.txtPattern.TabIndex = 3;
+            this.txtPattern.Text = "_H__A_D___F_D_N";
             // 
             // lblPattern
             // 
@@ -84,6 +94,7 @@
             this.txtWordSize.Name = "txtWordSize";
             this.txtWordSize.Size = new System.Drawing.Size(116, 20);
             this.txtWordSize.TabIndex = 5;
+            this.txtWordSize.Text = "3,6,2,4";
             // 
             // lblWordSizes
             // 
@@ -111,22 +122,21 @@
             this.progressBar1.Size = new System.Drawing.Size(264, 23);
             this.progressBar1.TabIndex = 7;
             // 
-            // textBox2
+            // txtResults
             // 
-            this.textBox2.Location = new System.Drawing.Point(16, 201);
-            this.textBox2.Multiline = true;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox2.Size = new System.Drawing.Size(264, 236);
-            this.textBox2.TabIndex = 8;
+            this.txtResults.Location = new System.Drawing.Point(16, 201);
+            this.txtResults.Multiline = true;
+            this.txtResults.Name = "txtResults";
+            this.txtResults.ReadOnly = true;
+            this.txtResults.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtResults.Size = new System.Drawing.Size(264, 193);
+            this.txtResults.TabIndex = 8;
             // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar1,
-            this.toolStripStatusLabel1,
-            this.toolStripStatusLabel2});
+            this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 468);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(293, 22);
@@ -145,29 +155,80 @@
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(173, 17);
             this.toolStripStatusLabel1.Text = "Crossword Solver by Mina Asad";
             // 
-            // toolStripStatusLabel2
+            // btnClear
             // 
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(118, 15);
-            this.toolStripStatusLabel2.Text = "toolStripStatusLabel2";
+            this.btnClear.Location = new System.Drawing.Point(16, 400);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(264, 22);
+            this.btnClear.TabIndex = 10;
+            this.btnClear.Text = "Clear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
-            // button1
+            // groupBox1
             // 
-            this.button1.Location = new System.Drawing.Point(16, 443);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(264, 22);
-            this.button1.TabIndex = 10;
-            this.button1.Text = "Clear";
-            this.button1.UseVisualStyleBackColor = true;
+            this.groupBox1.Controls.Add(this.lblTimer);
+            this.groupBox1.Location = new System.Drawing.Point(210, 428);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(70, 37);
+            this.groupBox1.TabIndex = 12;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Timer";
+            // 
+            // lblTimer
+            // 
+            this.lblTimer.Location = new System.Drawing.Point(16, 16);
+            this.lblTimer.Name = "lblTimer";
+            this.lblTimer.Size = new System.Drawing.Size(48, 20);
+            this.lblTimer.TabIndex = 0;
+            this.lblTimer.Text = "0 ms";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.lblMaxLetters);
+            this.groupBox2.Location = new System.Drawing.Point(153, 428);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(51, 37);
+            this.groupBox2.TabIndex = 13;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Chars";
+            // 
+            // lblMaxLetters
+            // 
+            this.lblMaxLetters.Location = new System.Drawing.Point(19, 16);
+            this.lblMaxLetters.Name = "lblMaxLetters";
+            this.lblMaxLetters.Size = new System.Drawing.Size(48, 20);
+            this.lblMaxLetters.TabIndex = 0;
+            this.lblMaxLetters.Text = "0";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.lblWords);
+            this.groupBox3.Location = new System.Drawing.Point(92, 428);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(55, 37);
+            this.groupBox3.TabIndex = 14;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Words";
+            // 
+            // lblWords
+            // 
+            this.lblWords.Location = new System.Drawing.Point(17, 16);
+            this.lblWords.Name = "lblWords";
+            this.lblWords.Size = new System.Drawing.Size(23, 20);
+            this.lblWords.TabIndex = 0;
+            this.lblWords.Text = "0";
             // 
             // CrosswordForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(293, 490);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.btnClear);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.txtResults);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.txtWordSize);
@@ -176,6 +237,7 @@
             this.Controls.Add(this.lblPattern);
             this.Controls.Add(this.txtAnagram);
             this.Controls.Add(this.lblAnagram);
+            this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -185,6 +247,9 @@
             this.Load += new System.EventHandler(this.CrosswordForm_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -200,12 +265,17 @@
         private System.Windows.Forms.Label lblWordSizes;
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txtResults;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label lblTimer;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label lblMaxLetters;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Label lblWords;
     }
 }
 

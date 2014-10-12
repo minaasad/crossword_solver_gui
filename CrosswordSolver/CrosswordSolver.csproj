@@ -58,6 +58,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Validator.cs" />
     <Compile Include="WordDictionary.cs" />
+    <Compile Include="WordResultSet.cs" />
+    <Compile Include="ListResultSet.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
