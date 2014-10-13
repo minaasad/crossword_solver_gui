@@ -95,7 +95,7 @@ namespace CrosswordSolver
         }
 
         /// <summary>
-        /// This method checks if any illegal exist accordingly
+        /// This method checks if any illegal characters exist accordingly
         /// </summary>
         /// <param name="word">string to check</param>
         /// <returns>True if illegals were found, false if none were found</returns>
@@ -112,7 +112,7 @@ namespace CrosswordSolver
         }
 
         /// <summary>
-        /// This method checks if any illegal exist accordingly
+        /// This method checks if any illegal characters exist accordingly
         /// </summary>
         /// <param name="word">string to check</param>
         /// <returns>True if illegals were found, false if none were found</returns>
@@ -129,7 +129,7 @@ namespace CrosswordSolver
         }
 
         /// <summary>
-        /// This method checks if any illegal exist accordingly
+        /// This method checks if any illegal characters exist accordingly
         /// </summary>
         /// <param name="word">string to check</param>
         /// <returns>True if illegals were found, false if none were found</returns>

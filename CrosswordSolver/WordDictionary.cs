@@ -9,18 +9,10 @@ namespace CrosswordSolver
     {
         private List<string> dictionaryWords { get; set; }
 
-        /// <summary>
-        /// MDictionary Constructor
-        /// </summary>
         public WordDictionary()
         {
         }
 
-        /// <summary>
-        /// Loads lines (assumed to be words) from 
-        /// a text file into a list of type String
-        /// </summary>
-        /// <param name="filePath">Path of text file</param>
         public void LoadFromFile(string filePath)
         {
             dictionaryWords = new List<string>();
@@ -34,21 +26,11 @@ namespace CrosswordSolver
             file.Close();
         }
 
-        /// <summary>
-        /// Loads lines (assumed to be words) from 
-        /// a text file into a list of type String
-        /// </summary>
-        /// <param name="filePath">Path of text file</param>
         public List<string> getAllWords()
         {
             return dictionaryWords;
         }
 
-        /// <summary>
-        /// Loads lines (assumed to be words) from 
-        /// a text file into a list of type String
-        /// </summary>
-        /// <param name="filePath">Path of text file</param>
         public WordResultSet getWordsWithSize(int size)
         {
             WordResultSet wordSet = new WordResultSet();

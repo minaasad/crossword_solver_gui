@@ -28,6 +28,11 @@ namespace CrosswordSolver
         private static Validator myValidator;
         private static WordDictionary myDictionary;
 
+        /// <summary>
+        /// This method initializes the Form component
+        /// "CrosswordForm" and instantiates required
+        /// dictionary and validation classes.
+        /// </summary>
         public CrosswordForm()
         {
             InitializeComponent();
@@ -35,11 +40,22 @@ namespace CrosswordSolver
             myDictionary = new WordDictionary();
         }
 
+        /// <summary>
+        /// This method is a delegate to the form's
+        /// OnLoad action event. It includes necessary
+        /// operations such as loading the dictioanry.
+        /// </summary>
         private void CrosswordForm_Load(object sender, EventArgs e)
         {
             LoadDictionary();
         }
 
+        /// <summary>
+        /// This method uses the WordDictionary class to
+        /// load a txt file with words (dictionary) from 
+        /// the application's directory. It also checks 
+        /// for the existence of the file at runtime.
+        /// </summary>
         private static void LoadDictionary()
         {
             if (!myValidator.IsFileValid(dictionaryPath))
@@ -53,6 +69,11 @@ namespace CrosswordSolver
             }
         }
 
+        /// <summary>
+        /// This method retrieves all field inputs
+        /// from CrosswordForm and stores them in
+        /// accesible class strings accordingly.
+        /// </summary>
         private void LoadFieldValues()
         {
             uAnagram = txtAnagram.Text.ToString().ToLower();
@@ -60,6 +81,11 @@ namespace CrosswordSolver
             rawWordSizeFormat = txtWordSize.Text.ToString().ToLower();
         }
 
+        /// <summary>
+        /// This method is a delegate to the search
+        /// button in CrosswordForm. It is called when
+        /// a user clicks the button.
+        /// </summary>
         private void btnSearch_Click(object sender, EventArgs e)
         {
             doPattern = true;
@@ -92,6 +118,11 @@ namespace CrosswordSolver
             return;
         }
 
+        /// <summary>
+        /// This method helps evaluate results and starts/
+        /// stops a timer while at it as well. It will 
+        /// call appropriate evaluation methods accordingly.
+        /// </summary>
         private void FindResults()
         {
             var stopwatch = Stopwatch.StartNew();
@@ -115,6 +146,13 @@ namespace CrosswordSolver
             lblTimer.Text = stopwatch.ElapsedMilliseconds + " ms";
         }
 
+        /// <summary>
+        /// This method evaluates the word size format required
+        /// by the user and returns a list of sets that adhere
+        /// to the requirements.
+        /// </summary>
+        /// <param name="rawFormat">String letters that define a word size format</param>
+        /// <returns>List of sets that adhere to the word size format</returns>
         private ListResultSet FindSets(string rawFormat)
         {
             ListResultSet resultSets = new ListResultSet();
@@ -127,11 +165,19 @@ namespace CrosswordSolver
             return resultSets;
         }
 
+        /// <summary>
+        /// This method is a delegate to the clear
+        /// button. It is called when a user clicks 
+        /// the button.
         private void btnClear_Click(object sender, EventArgs e)
         {
             ClearAll();
         }
 
+        /// <summary>
+        /// This method clears the multi-line textbox
+        /// of results, as well as all the other 
+        /// informative labels.
         private void ClearAll()
         {
             txtResults.Clear();
@@ -141,14 +187,14 @@ namespace CrosswordSolver
         }
 
         /// <summary>
-        /// This method should performed if first argument is "A" (anagram).
-        /// It passes the user's word and checks it for anagrams against 
-        /// the dictionary words. It also writes in the console output its'
-        /// results as well as keeps track of how many matches were found.
+        /// This method evaluates the user's input and checks for anagrams 
+        /// (if required) against the dictionary words. It also writes in 
+        /// the multi-line textbox its results accordingly as well as keeps
+        /// track of how many matches were found.
         /// </summary>
-        /// <param name="user_word">String letters that user entered</param>
-        /// <param name="counter">Starting position of counter. Ideally 0</param>
-        /// <returns>Number of anagram matches found</returns>
+        /// <param name="param">String letters entered by user</param>
+        /// <param name="wordSet">List of word sets to check</param>
+        /// <param name="doAnagram">Whether to check for anagrams</param>
         private void WriteOutCombinedResults(string param, ListResultSet wordSet, bool doAnagram)
         {
             int matchesFound = 0;
@@ -186,7 +232,17 @@ namespace CrosswordSolver
             WriteOutStatus("Found " + matchesFound + " matches");
         }
 
-        private bool matchFound(string param, bool doAnagram, int matchesFound, string[] dictionary_words_splitted)
+        /// <summary>
+        /// This method determines and displays results based on several
+        /// parameters. It uses Crypto class to check the validity of
+        /// anagrams if required.
+        /// </summary>
+        /// <param name="param">String letters entered by user</param>
+        /// <param name="doAnagram">Whether to check for anagrams</param>
+        /// <param name="matchesFound">The latest number of matches found</param>
+        /// <param name="dictionary_words_splitted">A permutated row of strings</param>
+        private bool matchFound(string param, bool doAnagram, int matchesFound, 
+                                    string[] dictionary_words_splitted)
         {
             Crypto cChecker = new Crypto();
             bool matchFound = false;
@@ -207,6 +263,13 @@ namespace CrosswordSolver
             return matchFound;
         }
 
+        /// <summary>
+        /// This method combines words (permutation) from multiple
+        /// word sets to return a single row of concatenated words
+        /// </summary>
+        /// <param name="existingSets">List of word sets to loop through</param>
+        /// <param name="resultSetCount">The number of existing sets</param>
+        /// <param name="allPosValues">Index of value to loop through</param>
         private static string[] GetCombinedWords(List<WordResultSet> existingSets, int resultSetCount, List<int> allPosValues)
         {
             string[] dictionary_words_splitted = new string[resultSetCount];
@@ -218,14 +281,12 @@ namespace CrosswordSolver
         }
 
         /// <summary>
-        /// This method should performed if first argument is "P" (pattern).
-        /// It passes the user's word and checks it for patterns against 
-        /// the dictionary words. It also writes in the console output its'
-        /// results as well as keeps track of how many matches were found.
+        /// This method evaluates the user's innput and checks it for patterns against 
+        /// specific dictionary words from a list of word sets.
         /// </summary>
-        /// <param name="user_word">String letters that user entered</param>
-        /// <param name="counter">Starting position of counter. Ideally 0</param>
-        /// <returns>Number of pattern matches found</returns>
+        /// <param name="param">String letters and placeholders of pattern</param>
+        /// <param name="wordSet">List of word sets to check</param>
+        /// <returns>List of modified word sets with the correct pattern</returns>
         private ListResultSet GetPatternListSet(string param, ListResultSet wordSet)
         {
             ListResultSet simplifiedSet = new ListResultSet();
@@ -280,34 +341,17 @@ namespace CrosswordSolver
         }
 
         /// <summary>
-        /// This method simply writes out to the console a line that
-        /// contains a match number and match content (i.e the word)
-        /// </summary>
-        /// <param name="matchNumber">Number of match found</param>
-        /// <param name="dictionary_word">Match string that has been found</param>
-        private int WriteOutMatches(WordResultSet matches)
-        {
-            int counter = 0;
-            foreach (string result in matches.GetAllWords())
-            {
-                counter++;
-                WriteOutMatch(counter, result);
-            }
-            return counter;
-        }
-
-        /// <summary>
-        /// This method simply writes out to the console a line that
-        /// contains a match number and match content (i.e the word)
+        /// This method simply prepares match results to be written
+        /// out to the multi-line result textbox
         /// </summary>
         /// <param name="matchNumber">Number of match found</param>
         /// <param name="dictionary_word">Match string that has been found</param>
         private void WriteOutMatch(int matchNumber, object dictionary_word)
         {
             string value;
-            /*Assuming no more than 100 matches can be found at once,
-             * all single match numbers will have a zero at the beginning 
-             * in favor of proper alignment when shown in the prompt*/
+            /*Assuming no more than 1000 matches can be found at once,
+             * all match numbers will have appropriate zero preceedings 
+             * at the beginning in favor of proper alignment when displayed*/
             if (matchNumber < doubleDigit)
             {
                 value = "000" + matchNumber + ": " + dictionary_word;
@@ -329,11 +373,10 @@ namespace CrosswordSolver
         }
 
         /// <summary>
-        /// This method simply writes out to the console a line that
-        /// contains a match number and match content (i.e the word)
+        /// This method simply writes out to the multi-line result textbox
+        /// a line that has been passed to it
         /// </summary>
-        /// <param name="matchNumber">Number of match found</param>
-        /// <param name="dictionary_word">Match string that has been found</param>
+        /// <param name="text">Result string</param>
         private void WriteOut(string text)
         {
             if (txtResults.Text.Length == 0)
@@ -347,22 +390,18 @@ namespace CrosswordSolver
         }
 
         /// <summary>
-        /// This method simply writes out to the console a line that
-        /// contains a match number and match content (i.e the word)
+        /// This method simply writes out to the 
+        /// toolstrip statusbar a string of text
         /// </summary>
-        /// <param name="matchNumber">Number of match found</param>
-        /// <param name="dictionary_word">Match string that has been found</param>
+        /// <param name="text">Status mesage</param>
         private void WriteOutStatus(string text)
         {
             toolStripStatusLabel1.Text = text;
         }
 
         /// <summary>
-        /// This method validates arguments passed to my crosswords console application.
-        /// The format should consist of the following command line arguments:
-        /// [A|P] [dictionary] [letters]
+        /// This method validates arguments passed to my crosswords forms application.
         /// </summary>
-        /// <param name="args">String array of arguments</param>
         /// <returns>True if arguments are valid or false is there is something wrong</returns>
         private bool IsArgsValid()
         {
@@ -419,11 +458,9 @@ namespace CrosswordSolver
         }
 
         /// <summary>
-        /// This method validates the third argument: the letters
-        /// [letters]
+        /// This method validates the anagram letters entered.
         /// </summary>
-        /// <param name="userWord">letters</param>
-        /// <param name="myValidator">Validator object to use against</param>
+        /// <param name="param">anagram letters</param>
         /// <returns>True if argument is valid, otherwise false</returns>
         private static bool IsAnagramLettersValid(string param)
         {
@@ -436,11 +473,9 @@ namespace CrosswordSolver
         }
 
         /// <summary>
-        /// This method validates the third argument: the letters
-        /// [letters]
+        /// This method validates the pattern letters entered.
         /// </summary>
-        /// <param name="userWord">letters</param>
-        /// <param name="myValidator">Validator object to use against</param>
+        /// <param name="param">pattern string</param>
         /// <returns>True if argument is valid, otherwise false</returns>
         private static bool IsPatternLettersValid(string param)
         {
@@ -453,11 +488,9 @@ namespace CrosswordSolver
         }
 
         /// <summary>
-        /// This method validates the third argument: the letters
-        /// [letters]
+        /// This method validates the word size format entered.
         /// </summary>
-        /// <param name="userWord">letters</param>
-        /// <param name="myValidator">Validator object to use against</param>
+        /// <param name="param">raw word size string</param>
         /// <returns>True if argument is valid, otherwise false</returns>
         private bool IsWordSizeFormatValid(string param)
         {
