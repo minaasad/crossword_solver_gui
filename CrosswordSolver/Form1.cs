@@ -5,7 +5,6 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +18,8 @@ namespace CrosswordSolver
         private const int tripleDigit = 100;
         private const int quadrupleDigit = 1000;
         private const int maxResults = 1000;
+        private const int maxWordCount = 4;
+        private const int maxWordSize = 30;
 
         private static bool doPattern, doAnagram;
 
@@ -60,7 +61,7 @@ namespace CrosswordSolver
         {
             if (!myValidator.IsFileValid(dictionaryPath))
             {
-                MessageBox.Show("Dictionary 'dict.txt' not found. \n Please make sure it's placed in the same directoy as this executable.", "Error");
+                MessageBox.Show("Dictionary 'dict.txt' not found.", "Error");
                 Application.Exit();
             }
             else
@@ -76,9 +77,12 @@ namespace CrosswordSolver
         /// </summary>
         private void LoadFieldValues()
         {
-            uAnagram = txtAnagram.Text.ToString().ToLower();
-            uPattern = txtPattern.Text.ToString().ToLower();
-            rawWordSizeFormat = txtWordSize.Text.ToString().ToLower();
+            string unLoweredAnagram = txtAnagram.Text;
+            uAnagram = unLoweredAnagram.ToLower();
+            string unLoweredPattern = txtPattern.Text;
+            uPattern = unLoweredPattern.ToLower();
+            string unLoweredWSF = txtWordSize.Text;
+            rawWordSizeFormat = unLoweredWSF.ToLower();
         }
 
         /// <summary>
@@ -96,26 +100,41 @@ namespace CrosswordSolver
             //If validation ok, then commence evaluations
             if (IsArgsValid())
             {
-                if (uPattern == "")
-                {
-                    for (int i = 0; i < int.Parse(lblMaxLetters.Text); i++)
-                    {
-                        uPattern += "_";
-                    }
-                    doPattern = false;
-                }
-                else if (uPattern.Distinct().Count() == 1)
-                {
-                    doPattern = false;
-                }
-                else if (uAnagram == "")
-                {
-                    doAnagram = false;
-                }
-
+                CheckFields();
                 FindResults();
             }
             return;
+        }
+
+        private void CheckFields()
+        {
+            if (uPattern == "")
+            {
+                for (int i = 0; i < int.Parse(lblMaxLetters.Text); i++)
+                {
+                    uPattern += "_";
+                }
+                doPattern = false;
+            }
+            else if (has1DistinctCharacter(uPattern))
+            {
+                doPattern = false;
+            }
+            else if (uAnagram == "")
+            {
+                doAnagram = false;
+            }
+        }
+
+        private bool has1DistinctCharacter(string param)
+        {
+            if (param == null) return false;
+            for (int i = 0; i < param.Length; i++)
+            {
+                if (param[i] != param[0]) 
+                    return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -198,8 +217,17 @@ namespace CrosswordSolver
         private void WriteOutCombinedResults(string param, ListResultSet wordSet, bool doAnagram)
         {
             int matchesFound = 0;
-            List<WordResultSet> existingSets = wordSet.GetAllSets();
-            
+            List<WordResultSet> existingSets = wordSet.allWordResultSets;
+
+            matchesFound = FindCombinations(param, wordSet, doAnagram, 
+                                                matchesFound, existingSets);
+
+            WriteOutStatus("Found " + matchesFound + " matches");
+        }
+
+        private int FindCombinations(string param, ListResultSet wordSet, bool doAnagram, 
+                                        int matchesFound, List<WordResultSet> existingSets)
+        {
             int resultSetCount = existingSets.Count;
             List<int> allPosValues = new List<int>();
             for (int i = 0; i < resultSetCount; i++)
@@ -210,14 +238,15 @@ namespace CrosswordSolver
             //loop through string rows/permutations across word sets
             while ((true) && (matchesFound < maxResults))
             {
-                if (matchFound(param, doAnagram, matchesFound, 
+                if (matchFound(param, doAnagram, matchesFound,
                     GetCombinedWords(existingSets, resultSetCount, allPosValues)))
                 {
                     matchesFound++;
                 }
 
                 int upIndex = resultSetCount - 1;
-                while (upIndex >= 0 && ++allPosValues[upIndex] >= wordSet.GetAllSets()[upIndex].GetCount())
+                while (upIndex >= 0 && ++allPosValues[upIndex]
+                        >= wordSet.allWordResultSets[upIndex].GetCount())
                 {
                     allPosValues[upIndex] = 0;
                     upIndex--;
@@ -226,10 +255,9 @@ namespace CrosswordSolver
                 if (upIndex < 0)
                 {
                     break;
-                } 
+                }
             }
-
-            WriteOutStatus("Found " + matchesFound + " matches");
+            return matchesFound;
         }
 
         /// <summary>
@@ -249,7 +277,7 @@ namespace CrosswordSolver
 
             if (doAnagram)
             {
-                if (cChecker.IsAnagram(string.Join("", dictionary_words_splitted).ToLower(), param))
+                if (cChecker.IsAnagram(string.Join("",dictionary_words_splitted).ToLower(),param))
                 {
                     matchFound = true;
                     WriteOutMatch(++matchesFound, string.Join(" ", dictionary_words_splitted));
@@ -270,12 +298,13 @@ namespace CrosswordSolver
         /// <param name="existingSets">List of word sets to loop through</param>
         /// <param name="resultSetCount">The number of existing sets</param>
         /// <param name="allPosValues">Index of value to loop through</param>
-        private static string[] GetCombinedWords(List<WordResultSet> existingSets, int resultSetCount, List<int> allPosValues)
+        private static string[] GetCombinedWords(List<WordResultSet> existingSets, 
+                                                    int resultSetCount, List<int> allPosValues)
         {
             string[] dictionary_words_splitted = new string[resultSetCount];
             for (int i = 0; i < resultSetCount; i++)
             {
-                dictionary_words_splitted[i] = existingSets[i].GetAllWords()[allPosValues[i]];
+                dictionary_words_splitted[i] = existingSets[i].wordSet[allPosValues[i]];
             }
             return dictionary_words_splitted;
         }
@@ -292,52 +321,69 @@ namespace CrosswordSolver
             ListResultSet simplifiedSet = new ListResultSet();
             int indexStartSize = 0;
 
-            for (int k = 0; k < wordSet.GetAllSets().Count; k++)
+            for (int k = 0; k < wordSet.allWordResultSets.Count; k++)
             {
-                WordResultSet wrs = wordSet.GetAllSets()[k];
-                WordResultSet newSet = new WordResultSet();
-
-                Crypto cChecker = new Crypto();
-                List<string> fixedLetters = new List<string>();
-
-                int currWordSize = wrs.GetWordSize();
-                if ((k - 1) >= 2)
-                {
-                    indexStartSize =    wordSet.GetAllSets()[k - 1].GetWordSize() +
-                                        wordSet.GetAllSets()[k - 2].GetWordSize() +
-                                        wordSet.GetAllSets()[k - 3].GetWordSize();
-                }
-                else if (((k - 1) > 0) & ((k - 1) < 2))
-                {
-                    indexStartSize =    wordSet.GetAllSets()[k - 1].GetWordSize() +
-                                        wordSet.GetAllSets()[k - 2].GetWordSize();
-                }
-                else if ((k - 1) == 0)
-                {
-                    indexStartSize =    wordSet.GetAllSets()[k - 1].GetWordSize();
-                }
-
-                string intendedWord = param.Substring(indexStartSize, currWordSize).ToLower();
-                for (int i = 0; i < intendedWord.Length; i++)
-                {
-                    if (intendedWord[i] != '_')
-                    {
-                        fixedLetters.Add(i + ":" + intendedWord[i]);
-                    }
-                }
-
-                foreach (var dictionary_word in wrs.GetAllWords())
-                {
-                    string dict_word = dictionary_word.ToString().ToLower().Trim();
-                    if (cChecker.IsPattern(dict_word, fixedLetters, intendedWord.Length))
-                    {
-                        newSet.AddNew(dictionary_word);
-                    }
-                }
+                WordResultSet wrs = wordSet.allWordResultSets[k];
+                WordResultSet newSet = GetPatternedWordSet(param, wordSet, 
+                                                            ref indexStartSize, k, wrs);
                 simplifiedSet.AddNew(newSet);
             }
 
             return simplifiedSet;
+        }
+
+        private static WordResultSet GetPatternedWordSet(string param, ListResultSet wordSet, 
+                                                            ref int indexStartSize,
+                                                            int k, WordResultSet wrs)
+        {
+            Crypto cChecker = new Crypto();
+            List<string> fixedLetters = new List<string>();
+
+            int currWordSize = wrs.GetWordSize();
+            const int index1 = 1, index2 = 2, index3 = 3;
+
+            if ((k - index1) >= index2)
+            {
+                indexStartSize =    wordSet.allWordResultSets[k - index1].GetWordSize() +
+                                    wordSet.allWordResultSets[k - index2].GetWordSize() +
+                                    wordSet.allWordResultSets[k - index3].GetWordSize();
+            }
+            else if (((k - index1) > 0) & ((k - index1) < index2))
+            {
+                indexStartSize =    wordSet.allWordResultSets[k - index1].GetWordSize() +
+                                    wordSet.allWordResultSets[k - index2].GetWordSize();
+            }
+            else if ((k - index1) == 0)
+            {
+                indexStartSize =    wordSet.allWordResultSets[k - index1].GetWordSize();
+            }
+
+            return FindNewSet(param, indexStartSize, wrs, cChecker, fixedLetters, currWordSize);
+        }
+
+        private static WordResultSet FindNewSet(string param, int indexStartSize, 
+                                                WordResultSet wrs, Crypto cChecker,
+                                                List<string> fixedLetters, int currWordSize)
+        {
+            WordResultSet newSet = new WordResultSet();
+            string intendedWord = param.Substring(indexStartSize, currWordSize).ToLower();
+            for (int i = 0; i < intendedWord.Length; i++)
+            {
+                if (intendedWord[i] != '_')
+                {
+                    fixedLetters.Add(i + ":" + intendedWord[i]);
+                }
+            }
+
+            foreach (var dictionary_word in wrs.wordSet)
+            {
+                string dict_word = dictionary_word.ToLower();
+                if (cChecker.IsPattern(dict_word, fixedLetters, intendedWord.Length))
+                {
+                    newSet.AddNew(dictionary_word);
+                }
+            }
+            return newSet;
         }
 
         /// <summary>
@@ -421,8 +467,7 @@ namespace CrosswordSolver
                     return false;
                 }
 
-                if ((uAnagram.Length != uPattern.Length) && 
-                    ((uPattern.Length > 0) && (uAnagram.Length > 0)))
+                if (Top2FieldsNotEqual() && Top2FieldsContainChars())
                 {
                     MessageBox.Show("Anagrams and patterns must be the same length.",
                                    "Invalid Input");
@@ -457,6 +502,16 @@ namespace CrosswordSolver
             return true;
         }
 
+        private static bool Top2FieldsContainChars()
+        {
+            return ((uPattern.Length > 0) && (uAnagram.Length > 0));
+        }
+
+        private static bool Top2FieldsNotEqual()
+        {
+            return (uAnagram.Length != uPattern.Length);
+        }
+
         /// <summary>
         /// This method validates the anagram letters entered.
         /// </summary>
@@ -465,10 +520,7 @@ namespace CrosswordSolver
         private static bool IsAnagramLettersValid(string param)
         {
             if (myValidator.ContainsIllegalCharactersOrPlaceholders(param))
-            {
-                Console.WriteLine("Illegal characters!");
                 return false;
-            }
             return true;
         }
 
@@ -480,10 +532,7 @@ namespace CrosswordSolver
         private static bool IsPatternLettersValid(string param)
         {
             if (myValidator.ContainsIllegalCharacters(param))
-            {
-                Console.WriteLine("Illegal pattern!");
                 return false;
-            }
             return true;
         }
 
@@ -501,8 +550,13 @@ namespace CrosswordSolver
                 return false;
             }
 
+            return checkComplexWordSizeFormatValidation();
+        }
+
+        private bool checkComplexWordSizeFormatValidation()
+        {
             string[] tempVals = rawWordSizeFormat.Split(',');
-            if (tempVals.Length > 4)
+            if (tempVals.Length > maxWordCount)
             {
                 MessageBox.Show("You cannot have more than 4 words.",
                                 "Invalid Input");
@@ -510,33 +564,66 @@ namespace CrosswordSolver
             }
             else
             {
-                lblWords.Text = tempVals.Length.ToString();
-                int maxLetters = 0;
-                foreach (var item in tempVals)
+                int maxLetters;
+                if (!IsWordFormatCorrect(tempVals, out maxLetters)) 
+                    return false;
+                if (!Top2FieldsExistCorrectly(maxLetters)) 
+                    return false;
+            }
+            return true;
+        }
+
+        private bool IsWordFormatCorrect(string[] tempVals, out int maxLetters)
+        {
+            lblWords.Text = tempVals.Length.ToString();
+            maxLetters = 0;
+
+            if (!IsWordLengthCorrect(tempVals, ref maxLetters)) 
+                return false;
+
+            lblMaxLetters.Text = maxLetters.ToString();
+            return true;
+        }
+
+        private static bool IsWordLengthCorrect(string[] tempVals, ref int maxLetters)
+        {
+            foreach (var item in tempVals)
+            {
+                int x = int.Parse(item);
+                if (x > maxWordSize)
                 {
-                    int x = int.Parse(item);
-                    if (x > 30)
-                    {
-                        MessageBox.Show("Word size limit is 30 characters.",
-                                        "Invalid Input");
-                        return false;
-                    }
-                    else
-                    {
-                        maxLetters = maxLetters + x;
-                    }
-                }
-                lblMaxLetters.Text = maxLetters.ToString();
-                if (((uPattern.Length != maxLetters) && uPattern.Length > 0) |
-                    ((uAnagram.Length != maxLetters) && uAnagram.Length > 0))
-                {
-                    MessageBox.Show("Word size sum does not match anagram or pattern length",
+                    MessageBox.Show("Word size limit is 30 characters.",
                                     "Invalid Input");
                     return false;
                 }
+                else
+                {
+                    maxLetters = maxLetters + x;
+                }
             }
-
             return true;
+        }
+
+        private static bool Top2FieldsExistCorrectly(int maxLetters)
+        {
+            if (PatternFieldExistsIncorrectly(maxLetters) |
+                AnagramFieldExistsIncorrectly(maxLetters))
+            {
+                MessageBox.Show("Word size sum does not match anagram or pattern length",
+                                "Invalid Input");
+                return false;
+            }
+            return true;
+        }
+
+        private static bool AnagramFieldExistsIncorrectly(int maxLetters)
+        {
+            return ((uAnagram.Length != maxLetters) && uAnagram.Length > 0);
+        }
+
+        private static bool PatternFieldExistsIncorrectly(int maxLetters)
+        {
+            return ((uPattern.Length != maxLetters) && uPattern.Length > 0);
         }
     }
 }

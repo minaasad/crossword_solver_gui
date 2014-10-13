@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,12 +7,18 @@ namespace CrosswordSolver
 {
     class WordResultSet
     {
-        List<string> wordSet {get; set;}
-        int size;
+        public List<string> wordSet {get; set;}
+        public int size;
 
         public WordResultSet()
         {
             wordSet = new List<string>();
+        }
+
+        public WordResultSet(int iSize)
+        {
+            wordSet = new List<string>();
+            size = iSize;
         }
 
         public void SetWordSize(int iSize)
@@ -34,11 +39,6 @@ namespace CrosswordSolver
         public void AddNew(string word)
         {
             wordSet.Add(word);
-        }
-
-        public List<string> GetAllWords()
-        {
-            return wordSet;
         }
     }
 }

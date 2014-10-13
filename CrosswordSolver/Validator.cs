@@ -140,19 +140,33 @@ namespace CrosswordSolver
             for (int i = 0; i < word.Length; i++)
             {
                 //Check for illegal characters
-                char wordChar = word[i];
-                if (!(wordChar.Equals(' ') | wordChar.Equals(',') | char.IsNumber(wordChar)))
-                {
-                    return true;
-                }
+                char wordChar;
+                if (hasIllegalWordSizeFormatCharacters(word, i, out wordChar)) return true;
 
                 //Check for repeated commas
-                if ((i+1) <= word.Length)
+                if (wordSizeFormatHasRepeatedCommas(word, i, wordChar)) return true;
+            }
+            return false;
+        }
+
+        private static bool hasIllegalWordSizeFormatCharacters(string word, 
+                                                                int i, out char wordChar)
+        {
+            wordChar = word[i];
+            if (!(wordChar.Equals(' ') | wordChar.Equals(',') | char.IsNumber(wordChar)))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private static bool wordSizeFormatHasRepeatedCommas(string word, int i, char wordChar)
+        {
+            if ((i + 1) <= word.Length)
+            {
+                if ((wordChar.Equals(',')) && (word[i + 1].Equals(',')))
                 {
-                    if ((wordChar.Equals(',')) && (word[i + 1].Equals(',')))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;

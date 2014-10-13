@@ -7,7 +7,7 @@ namespace CrosswordSolver
 {
     class WordDictionary
     {
-        private List<string> dictionaryWords { get; set; }
+        public List<string> dictionaryWords { get; set; }
 
         public WordDictionary()
         {
@@ -26,14 +26,9 @@ namespace CrosswordSolver
             file.Close();
         }
 
-        public List<string> getAllWords()
-        {
-            return dictionaryWords;
-        }
-
         public WordResultSet getWordsWithSize(int size)
         {
-            WordResultSet wordSet = new WordResultSet();
+            WordResultSet wordSet = new WordResultSet(size);
 
             foreach (var word in dictionaryWords)
             {
@@ -42,8 +37,6 @@ namespace CrosswordSolver
                     wordSet.AddNew(word);
                 }
             }
-
-            wordSet.SetWordSize(size);
             return wordSet;
         }
     }
