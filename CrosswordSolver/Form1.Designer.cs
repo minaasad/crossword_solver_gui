@@ -36,7 +36,6 @@
             this.txtWordSize = new System.Windows.Forms.TextBox();
             this.lblWordSizes = new System.Windows.Forms.Label();
             this.btnSearch = new System.Windows.Forms.Button();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.txtResults = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
@@ -115,21 +114,14 @@
             this.btnSearch.UseVisualStyleBackColor = true;
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(16, 163);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(264, 23);
-            this.progressBar1.TabIndex = 7;
-            // 
             // txtResults
             // 
-            this.txtResults.Location = new System.Drawing.Point(16, 201);
+            this.txtResults.Location = new System.Drawing.Point(16, 153);
             this.txtResults.Multiline = true;
             this.txtResults.Name = "txtResults";
             this.txtResults.ReadOnly = true;
             this.txtResults.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtResults.Size = new System.Drawing.Size(264, 193);
+            this.txtResults.Size = new System.Drawing.Size(264, 234);
             this.txtResults.TabIndex = 8;
             // 
             // statusStrip1
@@ -229,7 +221,6 @@
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.txtResults);
-            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.txtWordSize);
             this.Controls.Add(this.lblWordSizes);
@@ -264,7 +255,6 @@
         private System.Windows.Forms.TextBox txtWordSize;
         private System.Windows.Forms.Label lblWordSizes;
         private System.Windows.Forms.Button btnSearch;
-        private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.TextBox txtResults;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
