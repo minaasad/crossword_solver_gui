@@ -29,5 +29,16 @@ namespace CrosswordSolver
         {
             return resultSets.Count;
         }
+
+        public int GetAllSizesMultiplied()
+        {
+            int size = 0;
+            foreach (WordResultSet var in resultSets)
+            {
+                if (size == 0) size = var.GetAllWords().Count;
+                else size *= var.GetAllWords().Count;
+            }
+            return Math.Abs(size);
+        }
     }
 }

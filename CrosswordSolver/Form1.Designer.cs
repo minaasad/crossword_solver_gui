@@ -157,7 +157,7 @@
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(16, 400);
+            this.btnClear.Location = new System.Drawing.Point(16, 393);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(264, 22);
             this.btnClear.TabIndex = 10;
@@ -168,12 +168,12 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.lblTimer);
-            this.groupBox1.Location = new System.Drawing.Point(210, 428);
+            this.groupBox1.Location = new System.Drawing.Point(199, 426);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(70, 37);
+            this.groupBox1.Size = new System.Drawing.Size(81, 37);
             this.groupBox1.TabIndex = 12;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Timer";
+            this.groupBox1.Text = "Stopwatch";
             // 
             // lblTimer
             // 
@@ -186,7 +186,7 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.lblMaxLetters);
-            this.groupBox2.Location = new System.Drawing.Point(153, 428);
+            this.groupBox2.Location = new System.Drawing.Point(142, 426);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(51, 37);
             this.groupBox2.TabIndex = 13;
@@ -204,7 +204,7 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.lblWords);
-            this.groupBox3.Location = new System.Drawing.Point(92, 428);
+            this.groupBox3.Location = new System.Drawing.Point(81, 426);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(55, 37);
             this.groupBox3.TabIndex = 14;
